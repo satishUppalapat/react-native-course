@@ -1,10 +1,9 @@
 import { supabase } from "@/lib/supabase";
 import { useUserStore } from "@/store/userStore";
 import { Property } from "@/types";
-import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useLocalSearchParams, useRouter, useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -31,7 +30,6 @@ const ADMIN_PHONE = "919999999999"; // replace with your WhatsApp number
 
 export default function PropertyDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { userId } = useAuth();
   const router = useRouter();
   const isAdmin = useUserStore((state) => state.isAdmin);
 
@@ -44,11 +42,8 @@ export default function PropertyDetailScreen() {
   const { isSaved, saveLoading, toggleSave } = useSavedProperty(id ?? "");
   const authSupabase = useSupabase();
 
-  useEffect(() => {
-    fetchProperty();
-  }, [id]);
-
-  const fetchProperty = async () => {
+  const fetchProperty = useCallback(async () => {
+    if (!id) return;
     const { data } = await supabase
       .from("properties")
       .select("*")
@@ -56,7 +51,13 @@ export default function PropertyDetailScreen() {
       .single();
     setProperty(data);
     setLoading(false);
-  };
+  }, [id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProperty();
+    }, [fetchProperty])
+  );
 
   const handleDelete = () => {
     Alert.alert("Delete Property", "Are you sure?", [

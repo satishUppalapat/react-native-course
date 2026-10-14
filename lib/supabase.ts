@@ -1,7 +1,9 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_KEY!;
+const supabaseUrl =
+  process.env.EXPO_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const supabaseAnonKey =
+  process.env.EXPO_PUBLIC_SUPABASE_KEY || "placeholder-anon-key";
 
 // Plain anon client — used for public reads (properties list, etc.)
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);

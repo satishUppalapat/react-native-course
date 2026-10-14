@@ -1,5 +1,5 @@
 import { useUserStore } from "@/store/userStore";
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
 
 export default function TabsLayout() {
   const isAdmin = useUserStore((state) => state.isAdmin);
@@ -7,30 +7,30 @@ export default function TabsLayout() {
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="index">
-        <Icon sf="house.fill" />
-        <Label>Home</Label>
+        <NativeTabs.Trigger.Icon sf="house.fill" md="home" />
+        <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="search">
-        <Icon sf="magnifyingglass" />
-        <Label>Search</Label>
+        <NativeTabs.Trigger.Icon sf="magnifyingglass" md="search" />
+        <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       {isAdmin && (
         <NativeTabs.Trigger name="create">
-          <Icon sf="plus.circle.fill" />
-          <Label>Add Property</Label>
+          <NativeTabs.Trigger.Icon sf="plus.circle.fill" md="add_circle" />
+          <NativeTabs.Trigger.Label>Add Property</NativeTabs.Trigger.Label>
         </NativeTabs.Trigger>
       )}
 
       <NativeTabs.Trigger name="saved">
-        <Icon sf="heart.fill" />
-        <Label>Saved</Label>
+        <NativeTabs.Trigger.Icon sf="heart.fill" md="favorite" />
+        <NativeTabs.Trigger.Label>Saved</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="profile">
-        <Icon sf="person.fill" />
-        <Label>Profile</Label>
+        <NativeTabs.Trigger.Icon sf="person.fill" md="person" />
+        <NativeTabs.Trigger.Label>Profile</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );

@@ -24,13 +24,7 @@ export default function HomeScreen() {
   const [recommended, setRecommended] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchProperties();
-    }, [])
-  );
-
-  const fetchProperties = async () => {
+  const fetchProperties = useCallback(async () => {
     setLoading(true);
 
     const { data: featuredData } = await supabase
@@ -48,7 +42,13 @@ export default function HomeScreen() {
     setFeatured(featuredData ?? []);
     setRecommended(recommendedData ?? []);
     setLoading(false);
-  };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchProperties();
+    }, [fetchProperties])
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">

@@ -2,7 +2,7 @@ import { useSupabase } from "@/hooks/useSupabase";
 import { Property } from "@/types";
 import { useAuth } from "@clerk/expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   ActivityIndicator,
@@ -12,7 +12,6 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native";
 import PropertyCard from "@/components/PropertyCard";
 
 interface SavedProperty {
@@ -40,7 +39,7 @@ export default function SavedScreen() {
 
     setSaved((data as unknown as SavedProperty[]) ?? []);
     setLoading(false);
-  }, [userId]);
+  }, [userId, authSupabase]);
 
   // Refresh every time the tab comes into focus
   useFocusEffect(

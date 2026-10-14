@@ -8,27 +8,29 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Property } from "@/types";
 import { useFilterStore } from "@/store/filterStore";
 import { formatPrice } from "@/lib/utils";
 import PropertyCard from "@/components/PropertyCard";
 import FilterModal from "@/components/FilterModal";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 
 export default function SearchScreen() {
   const [results, setResults] = useState<Property[]>([]);
   const [loading, setLoading] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
 
   const { openFilters } = useLocalSearchParams<{ openFilters?: string }>();
+  const [showFilters, setShowFilters] = useState(openFilters === "true");
+  const [prevOpenFilters, setPrevOpenFilters] = useState(openFilters);
 
-  useEffect(() => {
+  if (openFilters !== prevOpenFilters) {
+    setPrevOpenFilters(openFilters);
     if (openFilters === "true") {
       setShowFilters(true);
     }
-  }, [openFilters]);
+  }
 
   const {
     search,
@@ -50,11 +52,7 @@ export default function SearchScreen() {
     maxPrice !== null,
   ].filter(Boolean).length;
 
-  useEffect(() => {
-    fetchResults();
-  }, [search, type, bedrooms, minPrice, maxPrice]);
-
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     setLoading(true);
 
     let query = supabase.from("properties").select("*");
@@ -83,7 +81,13 @@ export default function SearchScreen() {
 
     setResults(data ?? []);
     setLoading(false);
-  };
+  }, [search, type, bedrooms, minPrice, maxPrice]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchResults();
+    }, [fetchResults])
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
